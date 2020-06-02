@@ -30,6 +30,14 @@
       <p>
         <a href="javascript:void(0)" @click="reset()">Upload again</a>
       </p>
+      <ul>
+        <li v-for="item in uploadedFiles">
+          <img :src="item.url" :alt="item.name" class="img-responsive">
+          <br>
+          <span>URL:</span>
+          <a>{{item.url}}</a>
+        </li>
+      </ul>
     </div>
     <div v-if="isFailed">
       <h2>Uploaded failed.</h2>
@@ -58,6 +66,7 @@
         currentStatus: null,
         uploadFieldName: 'photos',
         fileCount: 0,
+        uploadedFiles: [],
       }
     },
     computed: {
@@ -86,8 +95,9 @@
         // console.log(formData); // 为啥没东西
         httpUpload(formData) // 为啥又有了
           .then( response => {
-            if (response.data.code == 0) {
+            if (response.data) {
               this.currentStatus = STATUS_SUCCESS
+              this.uploadedFiles = response.data;
             } else {
               this.currentStatus = STATUS_FAIL;
               this.uploadError = response.data.err;
@@ -152,6 +162,10 @@
       text-align: center;
       padding: 50px 0;
     }
+  }
+
+  .img-responsive {
+    max-width: 200px;
   }
 
 </style>
